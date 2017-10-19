@@ -1,2 +1,2 @@
-# Collection
+# Colecciones
 Ejercicio de colecciones Pol Gelabert
