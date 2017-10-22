@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class Mundo2 {
 
-    Logger log = Logger.getLogger("a");
+    Logger log = Logger.getLogger(Mundo2.this.getClass().getName());
 
 
     public ArrayList<Usuario> UsuarioInicial(ArrayList<Usuario> list_usu){
@@ -105,7 +106,7 @@ public class Mundo2 {
             Objeto o = new Objeto (nobj, t, des, v, c);
             list_usu.get(m).list_obj.add(o);
         } else{
-            log.severe("*** null: el usuario " + usu + " no existe.");          // Mensaje error.
+            log.fatal("*** null: el usuario " + usu + " no existe.");          // Mensaje error.
         }
 
     }
@@ -129,7 +130,7 @@ public class Mundo2 {
             }
             return usu_consult;
         } else {
-            log.info("*** null: el usuario " + usu + " no existe.");      // Mensaje error.
+            log.fatal("*** null: el usuario " + usu + " no existe.");      // Mensaje error.
             return null;
         }
 
@@ -159,7 +160,7 @@ public class Mundo2 {
             }
 
         } else{
-            log.info("*** null: el usuario " + usu + " no existe.");      // Mensaje error.
+            log.fatal("*** null: el usuario " + usu + " no existe.");      // Mensaje error.
             list_obj_consult = null;
         }
 
@@ -190,12 +191,12 @@ public class Mundo2 {
                 log.info("Nombre objeto :" + list_usu.get(m).list_obj.get(l).nombreobj + NL + "Tipo obj: " + list_usu.get(m).list_obj.get(l).tipo + NL + "Descripción obj: " + list_usu.get(m).list_obj.get(l).descripcion + NL + "Valor obj: " + list_usu.get(m).list_obj.get(l).valor + NL + "Coste obj: " + list_usu.get(m).list_obj.get(l).coste + NL + "........................");
                 return list_usu.get(m).list_obj.get(l);
             } else{
-                log.severe("El usuario " + usu + " no tiene objetos.");
+                log.fatal("El usuario " + usu + " no tiene objetos.");
                 return null;
             }
 
         } else {
-            log.severe("*** El usuario " + usu + " no existe.");
+            log.fatal("*** El usuario " + usu + " no existe.");
             return null;
         }
     }
@@ -211,10 +212,10 @@ public class Mundo2 {
                 list_usu.get(n).list_obj.add(o);
                 list_usu.get(m).list_obj.remove(o);
             } else {
-                log.severe("*** El objeto " + nom_obj + " no pertenece al usuario " + orig );
+                log.fatal("*** El objeto " + nom_obj + " no pertenece al usuario " + orig );
             }
         } else {
-            log.severe("*** El usuario no existe.");
+            log.fatal("*** El usuario no existe.");
         }
 
 
@@ -233,7 +234,7 @@ public class Mundo2 {
             log.info("Se ha eliminado el objeto: " + nom_obj + " del usuario: " + usu + " con éxito.");
             return true;
         } else{
-            log.severe("El objeto: " + nom_obj + " o el usuario: " + usu + " no existen.");
+            log.fatal("El objeto: " + nom_obj + " o el usuario: " + usu + " no existen.");
             return false;
         }
 
@@ -247,10 +248,12 @@ public class Mundo2 {
             log.info("Usuario eliminado correctamente.");
             return true;
         } else{
-            log.severe("*** El usuario " + usu + " no existe.");
+            log.fatal("*** El usuario " + usu + " no existe.");
             return false;
         }
     }
+
+
 
 
 

@@ -1,14 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
+
 
 public class Main2 {
 
+    final static Logger log = Logger.getLogger(Main2.class.getName());
+
+
     public static void main(String[] args) {
 
+        org.apache.log4j.BasicConfigurator.configure();
         Mundo2 miMundo = new Mundo2();
-        Logger log = Logger.getLogger("a");
+
         String NL = System.lineSeparator();     // Enter en System.out.println()
         ArrayList<Usuario> list_usu = new ArrayList<Usuario>();    // Instancia ArrayList que se se guardaran los Usuarios.
         Usuario usu_consultado;
