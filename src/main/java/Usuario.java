@@ -26,15 +26,19 @@ public class Usuario {
 
 
     public boolean usuarioEsIgual(Usuario player) {
-        boolean resp = false;
+
         if (player.nombre == this.nombre && player.password == this.password && player.nivel == this.nivel && player.ataque == this.ataque && player.defensa == this.defensa && player.resistencia == this.resistencia) {
             if (player.list_obj.get(0).nombreobj == this.list_obj.get(0).nombreobj && player.list_obj.get(0).tipo == this.list_obj.get(0).tipo && player.list_obj.get(0).descripcion == this.list_obj.get(0).descripcion && player.list_obj.get(0).valor == this.list_obj.get(0).valor && player.list_obj.get(0).coste == this.list_obj.get(0).coste) {
                 return true;
+            } else {
+                return false;
             }
+        } else {
+            return false;
         }
-
-        return resp;
     }
+
+
 
 
     public boolean listaEsIgual (List<Objeto> lobj_consult){

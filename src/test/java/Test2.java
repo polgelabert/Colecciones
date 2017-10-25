@@ -3,9 +3,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Logger;
-//import java.util.logging.Logger; //logger java
 import static org.junit.Assert.*;
 
 
@@ -13,58 +13,69 @@ public class Test2 {
 
     final static Logger log = Logger.getLogger(Test2.class.getName());          // test2.class.getname indica el nombre de la clase.
 
-    Mundo2 miMundo;
-    Usuario player1, player2, player, esperado;
-    Objeto o, o1,o2;
-    ArrayList<Objeto> lobj, lobj2, lobj_esperado;
+    Mundo miMundo;
+    HashMap<String, Usuario> Map;
+    Usuario player, player_esperado;
+    Objeto o, obj_esperado;
+    ArrayList<Objeto>  lobj, lobj_esperado;
     ArrayList<Usuario> list_usu;
-    String usu, nom_obj;
-    List<Objeto> lobj_consult;
+    String u, nom_obj, origen, destino;
+    List<Objeto> lista_obj, lista_obj_esp;
+
+    boolean result;
 
     @Before @After
     public void setUp(){
-        miMundo = new Mundo2();
+        Map = new HashMap<>();
+        miMundo = new Mundo();
         lobj = new ArrayList<Objeto>();
-        lobj2 = new ArrayList<Objeto>();
         lobj_esperado = new ArrayList<Objeto>();
         list_usu = new ArrayList<Usuario>();
 
-        //Se añade Usuario1 con 2 objetos.
-        player1 = new Usuario("pol", "1234", 10, 20, 30, 40, lobj);
-        o1 = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        player1.list_obj.add(o1);
-        o1 = new Objeto("pistola", "revolver", "pistola para disparar a los enemigos", 1000, 750);
-        player1.list_obj.add(o1);
-        list_usu.add(player1);
 
+        //Se añaden 2 Usuarios con 1 objeto cada uno.
+        player = new Usuario("pol", "1234", 10, 20, 30, 40, lobj);
+        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+        player.list_obj.add(o);
+        miMundo.Map.put(player.nombre, player);
 
-        //Se añade Usuario2 con objeto2.
-        player2 = new Usuario("marc", "0000", 1, 2, 3, 4, lobj2);
-        o2 = new Objeto("puñal", "asesinato", "puñal para enfrentar enemigos cuerpo a cuerpo", 250, 150);
-        player2.list_obj.add(o2);
-        list_usu.add(player2);
+        lobj = new ArrayList<Objeto>();
+        player = new Usuario("marc", "pass_marc", 50, 60, 70, 80, lobj);
+        o = new Objeto("puñal", "asesinato", "puñal para asesinar a los enemigos", 1000, 750);
+        player.list_obj.add(o);
+        miMundo.Map.put(player.nombre, player);
+
     }
 
-    @Test
-    public void eliminarUsuarioTest(){
 
-        usu = "pol";
-        boolean result = miMundo.eliminarUsuario(list_usu, usu);
-        assertTrue(result);
-        log.info("Usuario eliminado correctamente.");
+
+    @Test
+    public void añadirObjetoAUsuarioTest(){
+
+        u = "pol";
+        o = new Objeto("Arco de flechas", "disparo", "Arco de flechas para disparar a los enemigos", 100, 150);
+
+        assertNull(miMundo.consultarObjetoDeUsuario(u, o.nombreobj));
+
+        miMundo.añadirObjetoAUsuario(u, o);
+
+        assertNotNull(miMundo.consultarObjetoDeUsuario(u, o.nombreobj));
+
+
 
     }
 
     @Test
     public void consultarUsuarioTest(){
-        usu = "pol";
-        player = miMundo.consultarUsuario(list_usu, usu);
 
-        esperado = new Usuario("pol", "1234", 10, 20, 30, 40, lobj_esperado);
+        u = "pol";
+        player = miMundo.consultarUsuario(u);
+
+        player_esperado = new Usuario("pol", "1234", 10, 20, 30, 40, lobj_esperado);
         o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        esperado.list_obj.add(o);
+        player_esperado.list_obj.add(o);
 
-        boolean resp = esperado.usuarioEsIgual(player);         //Objects.equals(esperado, player);
+        boolean resp = player_esperado.usuarioEsIgual(player);         //Objects.equals(player_esperado, player);
 
         assertTrue(resp);
     }
@@ -72,59 +83,66 @@ public class Test2 {
     @Test
     public void consultarObjetoDeUsuarioTest(){
 
-        usu = "pol";
+        u = "pol";
         nom_obj = "espada";
-        Objeto o = miMundo.consultarObjetoDeUsuario(list_usu, usu, nom_obj);
-        Objeto esperado = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+        o = miMundo.consultarObjetoDeUsuario(u, nom_obj);
+        obj_esperado = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
 
-        boolean resp = esperado.objetoEsIgual(o);
+        boolean resp = obj_esperado.objetoEsIgual(o);
         assertTrue(resp);
     }
 
     @Test
     public void consultarObjetosDeUsuarioTest(){
 
-        usu = "pol";
-        int m = miMundo.getUsuario(list_usu, usu);
-        lobj_consult = miMundo.consultarObjetosDeUsuario(list_usu, usu);
+        u = "pol";
 
-        List<Objeto> lobj_esperado = list_usu.get(0).list_obj;
+        lista_obj = miMundo.consultarObjetosDeUsuario(u);
 
-        boolean resp = list_usu.get(m).listaEsIgual(lobj_esperado);
+        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+        lista_obj_esp = new ArrayList<>();
+        lista_obj_esp.add(o);
+
+        boolean resp = miMundo.Map.get(u).listaEsIgual(lista_obj_esp);
+
         assertTrue(resp);
 
     }
 
     @Test
     public void transferirObjetoEntreUsuariosTest(){
-        String orig = "pol";
-        String dest = "marc";
+
+        origen = "pol";
+        destino = "marc";
         nom_obj = "espada";
-        int n = list_usu.get(0).list_obj.size();
-        int m = list_usu.get(1).list_obj.size();
-        miMundo.transferirObjetoEntreUsuarios(list_usu, orig, dest, nom_obj);
 
+        miMundo.transferirObjetoEntreUsuarios(origen, destino, nom_obj);
 
-        boolean res = false;
-        if (list_usu.get(0).list_obj.size() == n-1 && list_usu.get(1).list_obj.size() == m+1){
-            res = true;
-        }
-
-        assertTrue(res);
-
+        assertNull(miMundo.consultarObjetoDeUsuario(origen, nom_obj));
+        assertNotNull(miMundo.consultarObjetoDeUsuario(destino, nom_obj));
 
     }
 
     @Test
     public void eliminarObjetosDeUsuarioTest(){
 
-        usu = "pol";
+        u = "pol";
         nom_obj = "espada";
-        boolean obj_eliminado = miMundo.eliminarObjetosDeUsuario(list_usu, usu, nom_obj);
+        result = miMundo.eliminarObjetosDeUsuario(u);
 
-        assertTrue(obj_eliminado);
+        assertTrue(result);
+        assertNull(miMundo.consultarObjetoDeUsuario(u,nom_obj));
     }
 
+    @Test
+    public void eliminarUsuarioTest(){
+
+        u = "pol";
+        result = miMundo.eliminarUsuario(u);
+        assertTrue(result);
+        assertNull(miMundo.consultarUsuario(u));
+
+    }
 
 
 
