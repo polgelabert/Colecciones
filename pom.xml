@@ -21,6 +21,10 @@
     </build>
 
 
+    <properties>
+        <log4j.configuration>src/main/resources/log4j.properties</log4j.configuration>
+    </properties>
+
     <dependencies>
 
         <dependency>

@@ -64,12 +64,6 @@ public class Mundo2 {
         return list_usu;
     }
 
-    public void newUsuario (ArrayList<Usuario> list_usu, Usuario player1){
-
-        list_usu.add(player1);
-
-    }
-
     public int getUsuario (ArrayList<Usuario> list_usu, String usu){
 
         boolean b = false;
@@ -91,24 +85,24 @@ public class Mundo2 {
         return m;
     }
 
-    public void añadirObjetoAUsuario ( ArrayList<Usuario> list_usu, String usu){
 
+    public void newUsuario (ArrayList<Usuario> list_usu, Usuario player1){
+
+        list_usu.add(player1);
+
+    }
+
+    public boolean eliminarUsuario (ArrayList<Usuario> list_usu, String usu){
 
         int m = getUsuario(list_usu, usu);
-        if (m!= -1){
-            log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
-            Scanner input4 = new Scanner(System.in);
-            String nobj = input4.nextLine();
-            String t = input4.nextLine();
-            String des = input4.nextLine();
-            int v = input4.nextInt();
-            int c = input4.nextInt();
-            Objeto o = new Objeto (nobj, t, des, v, c);
-            list_usu.get(m).list_obj.add(o);
+        if(m!= -1){
+            list_usu.remove(m);
+            log.info("Usuario eliminado correctamente.");
+            return true;
         } else{
-            log.fatal("*** null: el usuario " + usu + " no existe.");          // Mensaje error.
+            log.fatal("*** El usuario " + usu + " no existe.");
+            return false;
         }
-
     }
 
     public  Usuario consultarUsuario ( ArrayList<Usuario> list_usu, String usu){
@@ -134,6 +128,26 @@ public class Mundo2 {
             return null;
         }
 
+
+    }
+
+    public void añadirObjetoAUsuario ( ArrayList<Usuario> list_usu, String usu){
+
+
+        int m = getUsuario(list_usu, usu);
+        if (m!= -1){
+            log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
+            Scanner input4 = new Scanner(System.in);
+            String nobj = input4.nextLine();
+            String t = input4.nextLine();
+            String des = input4.nextLine();
+            int v = input4.nextInt();
+            int c = input4.nextInt();
+            Objeto o = new Objeto (nobj, t, des, v, c);
+            list_usu.get(m).list_obj.add(o);
+        } else{
+            log.fatal("*** null: el usuario " + usu + " no existe.");          // Mensaje error.
+        }
 
     }
 
@@ -201,6 +215,22 @@ public class Mundo2 {
         }
     }
 
+    public boolean eliminarObjetosDeUsuario(ArrayList<Usuario> list_usu, String usu, String nom_obj){
+
+        int m = getUsuario(list_usu, usu);
+        Objeto obj = consultarObjetoDeUsuario(list_usu, usu, nom_obj);
+
+        if (obj != null){
+            list_usu.get(m).list_obj.remove(obj);
+            log.info("Se ha eliminado el objeto: " + nom_obj + " del usuario: " + usu + " con éxito.");
+            return true;
+        } else{
+            log.fatal("El objeto: " + nom_obj + " o el usuario: " + usu + " no existen.");
+            return false;
+        }
+
+    }
+
     public void transferirObjetoEntreUsuarios (ArrayList<Usuario> list_usu, String orig, String dest, String nom_obj){
 
         int m = getUsuario(list_usu,orig);
@@ -224,34 +254,9 @@ public class Mundo2 {
 
     }
 
-    public boolean eliminarObjetosDeUsuario(ArrayList<Usuario> list_usu, String usu, String nom_obj){
 
-        int m = getUsuario(list_usu, usu);
-        Objeto obj = consultarObjetoDeUsuario(list_usu, usu, nom_obj);
 
-        if (obj != null){
-            list_usu.get(m).list_obj.remove(obj);
-            log.info("Se ha eliminado el objeto: " + nom_obj + " del usuario: " + usu + " con éxito.");
-            return true;
-        } else{
-            log.fatal("El objeto: " + nom_obj + " o el usuario: " + usu + " no existen.");
-            return false;
-        }
 
-    }
-
-    public boolean eliminarUsuario (ArrayList<Usuario> list_usu, String usu){
-
-        int m = getUsuario(list_usu, usu);
-        if(m!= -1){
-            list_usu.remove(m);
-            log.info("Usuario eliminado correctamente.");
-            return true;
-        } else{
-            log.fatal("*** El usuario " + usu + " no existe.");
-            return false;
-        }
-    }
 
 
 
