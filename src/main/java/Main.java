@@ -82,20 +82,23 @@ public class Main {
         // 2 - AÑADIR OBJETO AL USUARIO.
         if (m == 2) {
             try{
+
                 log.info("Introduce el nombre de usuario para añadir el objeto:");
                 input = new Scanner(System.in);
                 usu = input.nextLine();
+                u = miMundo.consultarUsuario(usu);
+                if (u != null) {
+                    log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
+                    Scanner input4 = new Scanner(System.in);
+                    nobj = input4.nextLine();
+                    t = input4.nextLine();
+                    des = input4.nextLine();
+                    v = input4.nextInt();
+                    c = input4.nextInt();
+                    o = new Objeto(nobj, t, des, v, c);
 
-                log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
-                Scanner input4 = new Scanner(System.in);
-                nobj = input4.nextLine();
-                t = input4.nextLine();
-                des = input4.nextLine();
-                v = input4.nextInt();
-                c = input4.nextInt();
-                o = new Objeto(nobj, t, des, v, c);
-
-                miMundo.Map.get(usu).list_obj.add(o);
+                    miMundo.Map.get(usu).list_obj.add(o);
+                }
 
             } catch (Exception e) {
                 log.fatal(e.getMessage());
