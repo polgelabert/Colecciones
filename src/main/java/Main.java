@@ -11,13 +11,13 @@ public class Main {
 
         Mundo miMundo = new Mundo();
 
-        Usuario u;
-        Objeto o;
-        ArrayList<Objeto> lobj = new ArrayList<>();
+        Usuario u, usuario;
+        Objeto o, objeto;
+        ArrayList<Objeto> listaObjetos = new ArrayList<>();
         ArrayList<Objeto> lobj2 = new ArrayList<>();
-        List<Objeto> list_obj;
-        String usu, origen, destino, nom_obj, n, p, nobj, t, des;
-        int niv, a, d, r, v, c;
+        List<Objeto> listaObjetosReturned;
+        String usu, origen, destino, nombreObjeto, nombre, password, tipoObjeto, descripcionObjeto;
+        int nivel, ataque, defensa, resistencia, valorObjeto, costeObjeto;
         boolean b;
 
         int m;
@@ -28,15 +28,15 @@ public class Main {
 
 
         // Inicialmente, se añaden 2 usuarios con 1 objeto cada uno.
-        u = new Usuario("pol", "1234", 10, 20, 30, 40, lobj);
+        u = new Usuario("pol", "1234", 10, 20, 30, 40);
         o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        u.list_obj.add(o);
-        miMundo.Map.put(u.nombre, u);
+        u.listaObjetos.add(o);
+        miMundo.map.put(u.nombre, u);
         miMundo.crearUsuario(u);
-        u = new Usuario("marc", "marc_pass", 50, 60, 70, 80, lobj2);
+        u = new Usuario("marc", "marc_pass", 50, 60, 70, 80);
         o = new Objeto("puñal", "asesinato", "puñal para asesinar a los enemigos", 300, 150);
-        u.list_obj.add(o);
-        miMundo.Map.put(u.nombre, u);
+        u.listaObjetos.add(o);
+        miMundo.map.put(u.nombre, u);
         miMundo.crearUsuario(u);
 
 
@@ -47,33 +47,35 @@ public class Main {
 
         // CREAR USUARIO.
         if(m == 1) {
-            try{
+            try {
                 log.info("introduce nombre de usuario, contraseña, nivel, ataque, defensa y resistencia: (separados por ENTER)");
                 input = new Scanner(System.in);
-                n = input.nextLine();
-                p = input.nextLine();
-                niv = input.nextInt();
-                a = input.nextInt();
-                d = input.nextInt();
-                r = input.nextInt();
-                lobj = new ArrayList<>();    // ArrayList que se se guardaran los objetos de cada jugador.
+                nombre = input.nextLine();
+                if (miMundo.consultarUsuario(nombre) != null) throw new Exceptions.UsuarioYaExisteException();
+                password = input.nextLine();
+                nivel = input.nextInt();
+                ataque = input.nextInt();
+                defensa = input.nextInt();
+                resistencia = input.nextInt();
+                listaObjetos = new ArrayList<>();    // ArrayList que se se guardaran los objetos de cada jugador.
 
-                log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
+                log.info("Introduce el objeto: nombre, tipoObjeto, descripción, valorObjeto y costeObjeto: (separados por ENTER)");
                 Scanner input4 = new Scanner(System.in);
-                nobj = input4.nextLine();
-                t = input4.nextLine();
-                des = input4.nextLine();
-                v = input4.nextInt();
-                c = input4.nextInt();
-                o = new Objeto (nobj, t, des, v, c);
-                lobj.add(o);
+                nombreObjeto = input4.nextLine();
+                tipoObjeto = input4.nextLine();
+                descripcionObjeto = input4.nextLine();
+                valorObjeto = input4.nextInt();
+                costeObjeto = input4.nextInt();
+                o = new Objeto (nombreObjeto, tipoObjeto, descripcionObjeto, valorObjeto, costeObjeto);
+                listaObjetos.add(o);
 
-                u = new Usuario(n, p, niv, a, d, r, lobj);
+                u = new Usuario(nombre, password, nivel, ataque, defensa, resistencia, listaObjetos);
 
                 b = miMundo.crearUsuario(u);
 
             } catch (Exception e){
-                log.fatal(e.getMessage());
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
             }
 
         }
@@ -82,71 +84,93 @@ public class Main {
         // 2 - AÑADIR OBJETO AL USUARIO.
         if (m == 2) {
             try{
-
                 log.info("Introduce el nombre de usuario para añadir el objeto:");
                 input = new Scanner(System.in);
-                usu = input.nextLine();
-                u = miMundo.consultarUsuario(usu);
-                if (u != null) {
-                    log.info("Introduce el objeto: nombre, tipo, descripción, valor y coste: (separados por ENTER)");
-                    Scanner input4 = new Scanner(System.in);
-                    nobj = input4.nextLine();
-                    t = input4.nextLine();
-                    des = input4.nextLine();
-                    v = input4.nextInt();
-                    c = input4.nextInt();
-                    o = new Objeto(nobj, t, des, v, c);
+                nombre = input.nextLine();
+                if( miMundo.consultarUsuario(nombre) == null) throw new Exceptions.UsuarioNoExisteException();
 
-                    miMundo.Map.get(usu).list_obj.add(o);
-                }
+                log.info("Introduce el objeto: nombre, tipoObjeto, descripción, valorObjeto y costeObjeto: (separados por ENTER)");
+                Scanner input4 = new Scanner(System.in);
+                nombreObjeto = input4.nextLine();
+                tipoObjeto = input4.nextLine();
+                descripcionObjeto = input4.nextLine();
+                valorObjeto = input4.nextInt();
+                costeObjeto = input4.nextInt();
+                objeto = new Objeto(nombreObjeto, tipoObjeto, descripcionObjeto, valorObjeto, costeObjeto);
+
+               // miMundo.map.get(nombre).listaObjetos.add(o);
+                miMundo.añadirObjetoAUsuario(nombre, objeto);
 
             } catch (Exception e) {
-                log.fatal(e.getMessage());
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
             }
         }
 
 
         // 3 - CONSULTAR UN USUARIO.
         if (m == 3){
-            log.info("Introduce el nombre de usuario para consultar:");
-            input = new Scanner(System.in);
-            usu = input.nextLine();
-            u = miMundo.consultarUsuario(usu);
+            try {
+                log.info("Introduce el nombre de usuario para consultar:");
+                input = new Scanner(System.in);
+                nombre = input.nextLine();
+                usuario = miMundo.consultarUsuario(nombre);
+
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
+            }
+
         }
 
 
         // 4 - CONSULTAR LISTA OBJETOS USUARIO.
         if (m == 4){
-            log.info("Introduce el nombre de usuario para consultar la lista de objetos:");
-            input = new Scanner(System.in);
-            usu = input.nextLine();
-            list_obj = miMundo.consultarObjetosDeUsuario(usu);
+            try {
+                log.info("Introduce el nombre de usuario para consultar la lista de objetos:");
+                input = new Scanner(System.in);
+                nombre = input.nextLine();
+                listaObjetosReturned = miMundo.consultarObjetosDeUsuario(nombre);
 
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
+            }
         }
 
 
         // 5 - CONSULTAR OBJETO DE USUARIO.
         if (m == 5){
-            log.info("Introduce el nombre de usuario y nombre del objeto a consultar: (Separados por Enter)");
-            input = new Scanner(System.in);
-            usu = input.nextLine();
-            nom_obj = input.nextLine();
-            o = miMundo.consultarObjetoDeUsuario(usu, nom_obj);
+            try {
+                log.info("Introduce el nombre de usuario y nombre del objeto a consultar: (Separados por Enter)");
+                input = new Scanner(System.in);
+                nombre = input.nextLine();
+                nombreObjeto = input.nextLine();
+                objeto = miMundo.consultarObjetoDeUsuario(nombre, nombreObjeto);
+
+
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
+            }
+
 
         }
 
 
         // 6 - TRANSFERIR OBJETO ENTRE USUARIOS.
         if (m == 6){
-            log.info("Introduce el usuario origen, usuario destino y objeto a transferir: (Separados por Enter)");
-            input = new Scanner(System.in);
-            origen = input.nextLine();
-            destino = input.nextLine();
-            nom_obj = input.nextLine();
             try{
-                miMundo.transferirObjetoEntreUsuarios(origen, destino, nom_obj);
-            } catch (Exception e){
-                log.fatal(e.getMessage());
+                log.info("Introduce el usuario origen, usuario destino y objeto a transferir: (Separados por Enter)");
+                input = new Scanner(System.in);
+                origen = input.nextLine();
+                destino = input.nextLine();
+                nombreObjeto = input.nextLine();
+                miMundo.transferirObjetoEntreUsuarios(origen, destino, nombreObjeto);
+
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
             }
 
         }
@@ -154,23 +178,33 @@ public class Main {
 
         // 7 - ELIMINAR USUARIO.
         if (m == 7){
-            log.info("Introduce el nombre de usuario a eliminar: (Separados por Enter)");
-            input = new Scanner(System.in);
-            usu = input.nextLine();
-            b = miMundo.eliminarUsuario(usu);
+            try {
+                log.info("Introduce el nombre de usuario a eliminar: (Separados por Enter)");
+                input = new Scanner(System.in);
+                nombre = input.nextLine();
+                b = miMundo.eliminarUsuario(nombre);
 
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
+            }
         }
 
 
         // 8 - ELIMINAR OBJETO.
         if (m == 8){
-            log.info("Introduce el usuario del que quieras eliminar un objeto: (Separados por Enter)");
-            input = new Scanner(System.in);
-            usu = input.nextLine();
-            b = miMundo.eliminarObjetosDeUsuario(usu);
+            try {
+                log.info("Introduce el usuario del que quieras eliminar un objeto:");
+                input = new Scanner(System.in);
+                nombre = input.nextLine();
+                b = miMundo.eliminarObjetosDeUsuario(nombre);
+
+            } catch (Exception e) {
+                log.fatal(e.getMessage() + e.getCause());
+                e.printStackTrace();
+            }
 
         }
-
 
 
 

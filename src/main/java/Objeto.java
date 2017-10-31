@@ -1,19 +1,17 @@
-import java.util.List;
-
 public class Objeto {
 
-    public String nombreobj;
-    public String tipo;
-    public String descripcion;
-    public int valor;
-    public int coste;
+    public String nombreObjeto;
+    public String tipoObjeto;
+    public String descripcionObjeto;
+    public int valorObjeto;
+    public int costeObjeto;
 
-    public Objeto (String nobj, String t, String des, int v, int c){
-        this.nombreobj = nobj;
-        this.tipo = t;
-        this.descripcion = des;
-        this.valor = v;
-        this.coste = c;
+    public Objeto (String nombreObjeto, String tipoObjeto, String descripcionObjeto, int valorObjeto, int costeObjeto){
+        this.nombreObjeto = nombreObjeto;
+        this.tipoObjeto = tipoObjeto;
+        this.descripcionObjeto = descripcionObjeto;
+        this.valorObjeto = valorObjeto;
+        this.costeObjeto = costeObjeto;
     }
 
 
@@ -21,7 +19,7 @@ public class Objeto {
 
         boolean resp = false;
 
-        if (o.nombreobj == this.nombreobj && o.tipo == this.tipo && o.descripcion == this.descripcion && o.valor == this.valor && o.coste == this.coste) {
+        if (o.nombreObjeto == this.nombreObjeto && o.tipoObjeto == this.tipoObjeto && o.descripcionObjeto == this.descripcionObjeto && o.valorObjeto == this.valorObjeto && o.costeObjeto == this.costeObjeto) {
             resp = true;
         }
 

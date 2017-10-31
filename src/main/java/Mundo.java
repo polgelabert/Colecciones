@@ -1,84 +1,121 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class Mundo {
+//public class Mundo implements IMundo{
+public class Mundo{
 
-    HashMap<String,Usuario> Map = new HashMap<>();
+    HashMap<String,Usuario> map = new HashMap<>();
     List<Objeto> list_obj_cons;
 
 
 
     public boolean crearUsuario(Usuario u){
 
-        Map.put(u.nombre, u);
+        map.put(u.nombre, u);
         return true;
     }
 
-    public void añadirObjetoAUsuario (String u, Objeto o){
+    public void añadirObjetoAUsuario (String nombre, Objeto objeto) throws Exception.UsuarioNoExisteException {
 
-        Map.get(u).list_obj.add(o);
+        // map.get(u).listaObjetos.add(o);
+        Usuario usuario = map.get(nombre);
+
+        if (usuario == null) throw new Exception.UsuarioNoExisteException();
+        usuario.insertarObjeto(objeto);
 
     }
 
-    public  Usuario consultarUsuario (String u){
+    public Usuario consultarUsuario (String nombre) throws Exception.UsuarioNoExisteException {
 
-       return Map.get(u);
+        Usuario usuario = getUser(nombre);
+        if( usuario == null) throw new Exception.UsuarioNoExisteException();
+        return usuario;
     }
 
-    public Objeto consultarObjetoDeUsuario(String u, String nom_obj){
 
-        list_obj_cons = consultarObjetosDeUsuario(u);
 
-        boolean enc= false;
-        int m=0;
-        while (!enc && m < list_obj_cons.size()){
+    /**
+     * retorna un objeto asociado a un usuario. En caso que el usuario no exista, se retornará un null,
+     * @param nombre
+     * @param nombreObjeto
+     * @return
+     * //@throws lanza una excepcion en caso que ...
+     */
+    public Objeto consultarObjetoDeUsuario(String nombre, String nombreObjeto) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException, Exception.ObjetoNoEncontradoException {
 
-            if(list_obj_cons.get(m).nombreobj.equals(nom_obj)){
-                enc = true;
-            } else {
-                m++;
-            }
-        }
 
-        if (enc == false){
-            return null;
-        }
-        else {
-            return list_obj_cons.get(m);
-        }
+        Usuario usuario = getUser(nombre);
+        Objeto objeto = usuario.getObjeto(nombreObjeto);
+        return objeto;
+
     }
 
-    public List<Objeto> consultarObjetosDeUsuario (String u) {
+    /**
+     * @param nombre nombre del usuario
+     * @return la lista de objetos de un usuario.
+     * @throws Exception.ListaObjetosVaciaException
+     * @throws Exception.UsuarioNoExisteException
+     */
+    public List<Objeto> consultarObjetosDeUsuario (String nombre) throws Exception.ListaObjetosVaciaException, Exception.UsuarioNoExisteException {
 
-        return  Map.get(u).list_obj;
+        Usuario usuario = getUser(nombre);
+        List<Objeto> listaObjetos = usuario.getListaObjetos(nombre);
+        if (listaObjetos == null) throw new Exception.ListaObjetosVaciaException();
+        return listaObjetos;
+        //return  map.get(nombre).listaObjetos;
     }
 
-    public boolean eliminarUsuario (String u){
+    public boolean eliminarUsuario (String nombre) throws Exception.UsuarioNoExisteException {
 
-        Map.remove(u);
+        Usuario usuario = getUser(nombre);
+        removeUser(usuario);
+
+        //map.remove(nombre);
         return true;
     }
 
-    public boolean eliminarObjetosDeUsuario(String u){
+    public boolean eliminarObjetosDeUsuario(String nombre) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException {
 
-        if(Map.get(u).list_obj.size() > 0){
-            Map.get(u).list_obj.remove(0);
+        Usuario usuario = getUser(nombre);
+        removeObject(usuario);
+        return true;
+
+        /*
+            if(map.get(nombre).listaObjetos.size() > 0){
+            map.get(nombre).listaObjetos.remove(0);
             return true;
-        } else {
+            } else {
             return false;
-        }
-
+            }
+        */
     }
 
-    public void transferirObjetoEntreUsuarios (String origen, String destino, String nom_obj){
+    public void transferirObjetoEntreUsuarios (String origen, String destino, String nom_obj) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException, Exception.ObjetoNoEncontradoException {
 
-        Objeto o = consultarObjetoDeUsuario(origen, nom_obj);
-        Map.get(destino).list_obj.add(o);
-        Map.get(origen).list_obj.remove(o);
+        Objeto objeto = consultarObjetoDeUsuario(origen, nom_obj);
+        Usuario dest = getUser(destino);
+        dest.listaObjetos.add(objeto);
+        Usuario orig = getUser(origen);
+        orig.listaObjetos.remove(objeto);
     }
 
+    private Usuario getUser(String nombre) throws Exception.UsuarioNoExisteException {
+
+        if (map.get(nombre) == null) throw new Exception.UsuarioNoExisteException();
+        return map.get(nombre);
+    }
+
+    private void removeUser(Usuario usuario) {
+
+        map.remove(usuario.nombre, usuario);
+    }
+
+    private void removeObject(Usuario usuario) throws Exception.UsuarioSinObjetosException {
+
+        if(usuario.listaObjetos.size() == 0) throw new Exception.UsuarioSinObjetosException();
+        usuario.listaObjetos.remove(0);
+    }
 
 
 
