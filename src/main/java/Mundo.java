@@ -1,6 +1,6 @@
 import java.util.HashMap;
 import java.util.List;
-
+import Exceptions.*;
 
 //public class Mundo implements IMundo{
 public class Mundo{
@@ -16,24 +16,22 @@ public class Mundo{
         return true;
     }
 
-    public void añadirObjetoAUsuario (String nombre, Objeto objeto) throws Exception.UsuarioNoExisteException {
+    public void añadirObjetoAUsuario (String nombre, Objeto objeto) throws UsuarioNoExisteException {
 
         // map.get(u).listaObjetos.add(o);
         Usuario usuario = map.get(nombre);
 
-        if (usuario == null) throw new Exception.UsuarioNoExisteException();
+        if (usuario == null) throw new Exceptions.UsuarioNoExisteException();
         usuario.insertarObjeto(objeto);
 
     }
 
-    public Usuario consultarUsuario (String nombre) throws Exception.UsuarioNoExisteException {
+    public Usuario consultarUsuario (String nombre) throws UsuarioNoExisteException {
 
         Usuario usuario = getUser(nombre);
-        if( usuario == null) throw new Exception.UsuarioNoExisteException();
+        if( usuario == null) throw new Exceptions.UsuarioNoExisteException();
         return usuario;
     }
-
-
 
     /**
      * retorna un objeto asociado a un usuario. En caso que el usuario no exista, se retornará un null,
@@ -42,7 +40,7 @@ public class Mundo{
      * @return
      * //@throws lanza una excepcion en caso que ...
      */
-    public Objeto consultarObjetoDeUsuario(String nombre, String nombreObjeto) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException, Exception.ObjetoNoEncontradoException {
+    public Objeto consultarObjetoDeUsuario(String nombre, String nombreObjeto) throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException {
 
 
         Usuario usuario = getUser(nombre);
@@ -54,19 +52,19 @@ public class Mundo{
     /**
      * @param nombre nombre del usuario
      * @return la lista de objetos de un usuario.
-     * @throws Exception.ListaObjetosVaciaException
-     * @throws Exception.UsuarioNoExisteException
+     * @throws Exceptions.ListaObjetosVaciaException
+     * @throws Exceptions.UsuarioNoExisteException
      */
-    public List<Objeto> consultarObjetosDeUsuario (String nombre) throws Exception.ListaObjetosVaciaException, Exception.UsuarioNoExisteException {
+    public List<Objeto> consultarObjetosDeUsuario (String nombre) throws ListaObjetosVaciaException, UsuarioNoExisteException {
 
         Usuario usuario = getUser(nombre);
         List<Objeto> listaObjetos = usuario.getListaObjetos(nombre);
-        if (listaObjetos == null) throw new Exception.ListaObjetosVaciaException();
+        if (listaObjetos == null || listaObjetos.size() == 0) throw new Exceptions.ListaObjetosVaciaException();
         return listaObjetos;
         //return  map.get(nombre).listaObjetos;
     }
 
-    public boolean eliminarUsuario (String nombre) throws Exception.UsuarioNoExisteException {
+    public boolean eliminarUsuario (String nombre) throws UsuarioNoExisteException {
 
         Usuario usuario = getUser(nombre);
         removeUser(usuario);
@@ -75,7 +73,7 @@ public class Mundo{
         return true;
     }
 
-    public boolean eliminarObjetosDeUsuario(String nombre) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException {
+    public boolean eliminarObjetosDeUsuario(String nombre) throws UsuarioNoExisteException, UsuarioSinObjetosException {
 
         Usuario usuario = getUser(nombre);
         removeObject(usuario);
@@ -91,7 +89,7 @@ public class Mundo{
         */
     }
 
-    public void transferirObjetoEntreUsuarios (String origen, String destino, String nom_obj) throws Exception.UsuarioNoExisteException, Exception.UsuarioSinObjetosException, Exception.ObjetoNoEncontradoException {
+    public void transferirObjetoEntreUsuarios (String origen, String destino, String nom_obj) throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException {
 
         Objeto objeto = consultarObjetoDeUsuario(origen, nom_obj);
         Usuario dest = getUser(destino);
@@ -100,9 +98,9 @@ public class Mundo{
         orig.listaObjetos.remove(objeto);
     }
 
-    private Usuario getUser(String nombre) throws Exception.UsuarioNoExisteException {
+    private Usuario getUser(String nombre) throws UsuarioNoExisteException {
 
-        if (map.get(nombre) == null) throw new Exception.UsuarioNoExisteException();
+        if (map.get(nombre) == null) throw new Exceptions.UsuarioNoExisteException();
         return map.get(nombre);
     }
 
@@ -111,9 +109,9 @@ public class Mundo{
         map.remove(usuario.nombre, usuario);
     }
 
-    private void removeObject(Usuario usuario) throws Exception.UsuarioSinObjetosException {
+    private void removeObject(Usuario usuario) throws UsuarioSinObjetosException {
 
-        if(usuario.listaObjetos.size() == 0) throw new Exception.UsuarioSinObjetosException();
+        if(usuario.listaObjetos.size() == 0) throw new Exceptions.UsuarioSinObjetosException();
         usuario.listaObjetos.remove(0);
     }
 

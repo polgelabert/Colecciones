@@ -67,7 +67,7 @@ public class Usuario {
         this.listaObjetos.add(o);
     }
 
-    public Objeto getObjeto(String nombreObjeto) throws Exception.UsuarioSinObjetosException, Exception.ObjetoNoEncontradoException {
+    public Objeto getObjeto(String nombreObjeto) throws Exceptions.UsuarioSinObjetosException, Exceptions.ObjetoNoEncontradoException {
 
         for (Objeto o: this.listaObjetos) {
             if (o.nombreObjeto.equals(nombreObjeto)) {
@@ -75,8 +75,8 @@ public class Usuario {
             }
         }
 
-        if (this.listaObjetos.size() != 0) throw new Exception.ObjetoNoEncontradoException();
-        throw new Exception.UsuarioSinObjetosException();
+        if (this.listaObjetos.size() != 0) throw new Exceptions.ObjetoNoEncontradoException();
+        throw new Exceptions.UsuarioSinObjetosException();
     }
 
     public List<Objeto> getListaObjetos(String nombre) {

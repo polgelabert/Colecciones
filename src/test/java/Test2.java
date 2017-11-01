@@ -1,3 +1,4 @@
+import Exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.junit.jupiter.api.Assertions;
+
 import static org.junit.Assert.*;
 
 
@@ -15,11 +18,11 @@ public class Test2 {
 
     Mundo miMundo;
     HashMap<String, Usuario> Map;
-    Usuario player, player_esperado;
-    Objeto o, obj_esperado;
+    Usuario player, userEsperado;
+    Objeto o, objeto, objetoEsperado, objetoReturned;
     ArrayList<Objeto>  lobj, lobj_esperado;
     ArrayList<Usuario> list_usu;
-    String u, nom_obj, origen, destino;
+    String u, nombre, nombreObjeto, origen, destino;
     List<Objeto> lista_obj, lista_obj_esp;
 
     boolean result;
@@ -33,7 +36,7 @@ public class Test2 {
         list_usu = new ArrayList<Usuario>();
 
 
-        //Se añaden 2 Usuarios con 1 objeto cada uno.
+        //Se añaden 2 Usuarios con 1 objeto (sólo el primero).
         player = new Usuario("pol", "1234", 10, 20, 30, 40, lobj);
         o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
         player.listaObjetos.add(o);
@@ -41,8 +44,9 @@ public class Test2 {
 
         lobj = new ArrayList<Objeto>();
         player = new Usuario("marc", "pass_marc", 50, 60, 70, 80, lobj);
-        o = new Objeto("puñal", "asesinato", "puñal para asesinar a los enemigos", 1000, 750);
+        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
         player.listaObjetos.add(o);
+        player.listaObjetos.remove(o);
         miMundo.map.put(player.nombre, player);
 
     }
@@ -50,98 +54,122 @@ public class Test2 {
 
 
     @Test
-    public void añadirObjetoAUsuarioTest(){
+    public void añadirObjetoAUsuarioTest() throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException{
 
-        u = "pol";
-        o = new Objeto("Arco de flechas", "disparo", "Arco de flechas para disparar a los enemigos", 100, 150);
+        nombre = "pol";
+        objeto = new Objeto("Arco de madera", "disparo", "Arco de flechas para disparar a los enemigos", 100, 150);
 
-        //assertNull(miMundo.consultarObjetoDeUsuario(u, o.nombreObjeto));
+        // Comprueba que se lanza ObjetoNoEncontradoException, UsuarioNoExisteException y UsuarioSinObjetosException.
+        Assertions.assertThrows(ObjetoNoEncontradoException.class, () -> { miMundo.consultarObjetoDeUsuario(nombre, objeto.nombreObjeto);});
+
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> { miMundo.consultarObjetoDeUsuario("BadName", objeto.nombreObjeto);});
+
+        Usuario user = miMundo.consultarUsuario(nombre);
+        Objeto espada = user.getObjeto("espada");
+        miMundo.eliminarObjetosDeUsuario(nombre);
+
+        Assertions.assertThrows(UsuarioSinObjetosException.class, () -> { miMundo.consultarObjetoDeUsuario(nombre, espada.nombreObjeto);});
+
+        miMundo.añadirObjetoAUsuario(nombre, espada);
+        miMundo.añadirObjetoAUsuario(nombre,objeto);
+
 
        // miMundo.añadirObjetoAUsuario(u, o);
-
        // assertNotNull(miMundo.consultarObjetoDeUsuario(u, o.nombreObjeto));
+    }
 
+    @Test
+    public void consultarUsuarioTest() throws UsuarioNoExisteException{
 
+        nombre = "BadName";
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.consultarUsuario(nombre);});
+
+        nombre = "pol";
+        userEsperado = new Usuario("pol", "1234", 10, 20, 30, 40);
+        objeto = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+        userEsperado.listaObjetos.add(objeto);
+
+        Usuario userReturned = miMundo.consultarUsuario(nombre);
+        userReturned.usuarioEsIgual(userEsperado);
+    }
+
+    @Test
+    public void consultarObjetoDeUsuarioTest() throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException{
+
+        nombre = "BadName";
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.consultarUsuario(nombre);});
+
+        // Falla!!
+        Usuario user = miMundo.consultarUsuario("marc");
+        Assertions.assertThrows(UsuarioSinObjetosException.class, () -> {miMundo.consultarObjetoDeUsuario(user.nombre, "espada");});
+
+        nombre = "pol";
+        Usuario user2 = miMundo.consultarUsuario(nombre);
+        Assertions.assertThrows(ObjetoNoEncontradoException.class, () -> {miMundo.consultarObjetoDeUsuario(nombre, "puñal");});
+
+        objetoEsperado = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+        Objeto objetoReturned = miMundo.consultarObjetoDeUsuario(nombre,user2.listaObjetos.get(0).nombreObjeto);
+        assertTrue(objetoEsperado.objetoEsIgual(objetoReturned));
 
     }
 
     @Test
-    public void consultarUsuarioTest(){
+    public void consultarObjetosDeUsuarioTest() throws ListaObjetosVaciaException, UsuarioNoExisteException{
+        nombre = "BadName";
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> { miMundo.consultarObjetosDeUsuario(nombre);});
 
-        u = "pol";
-        //player = miMundo.consultarUsuario(u);
+        nombre = "marc";
+        Assertions.assertThrows(ListaObjetosVaciaException.class, () -> { miMundo.consultarObjetosDeUsuario(nombre);});
 
-        player_esperado = new Usuario("pol", "1234", 10, 20, 30, 40, lobj_esperado);
-        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        player_esperado.listaObjetos.add(o);
-
-        boolean resp = player_esperado.usuarioEsIgual(player);         //Objects.equals(player_esperado, player);
-
-        assertTrue(resp);
-    }
-
-    @Test
-    public void consultarObjetoDeUsuarioTest(){
-
-        u = "pol";
-        nom_obj = "espada";
-        //o = miMundo.consultarObjetoDeUsuario(u, nom_obj);
-        obj_esperado = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-
-        boolean resp = obj_esperado.objetoEsIgual(o);
-        assertTrue(resp);
-    }
-
-    @Test
-    public void consultarObjetosDeUsuarioTest(){
-
-        u = "pol";
-
-        //lista_obj = miMundo.consultarObjetosDeUsuario(u);
-
-        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        lista_obj_esp = new ArrayList<>();
-        lista_obj_esp.add(o);
-
-        boolean resp = miMundo.map.get(u).listaEsIgual(lista_obj_esp);
-
-        assertTrue(resp);
+        nombre = "pol";
+        Usuario user = miMundo.consultarUsuario(nombre);
+        List<Objeto> listaObjetosReturned = miMundo.consultarObjetosDeUsuario(nombre);
+        assertTrue(user.listaEsIgual(listaObjetosReturned));
 
     }
 
     @Test
-    public void transferirObjetoEntreUsuariosTest(){
+    public void transferirObjetoEntreUsuariosTest() throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException{
 
         origen = "pol";
         destino = "marc";
-        nom_obj = "espada";
+        nombreObjeto = "espada";
 
-       // miMundo.transferirObjetoEntreUsuarios(origen, destino, nom_obj);
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.transferirObjetoEntreUsuarios("BadName", destino, nombreObjeto);});
+        Assertions.assertThrows(UsuarioSinObjetosException.class, () -> {miMundo.transferirObjetoEntreUsuarios("marc", origen, nombreObjeto);});
+        Assertions.assertThrows(ObjetoNoEncontradoException.class, () -> {miMundo.transferirObjetoEntreUsuarios("pol", "marc", "Arco");});
 
-        //assertNull(miMundo.consultarObjetoDeUsuario(origen, nom_obj));
-        //assertNotNull(miMundo.consultarObjetoDeUsuario(destino, nom_obj));
+        miMundo.transferirObjetoEntreUsuarios(origen, destino, nombreObjeto);
+        Usuario user = miMundo.consultarUsuario(origen);
+        Usuario user2 = miMundo.consultarUsuario(origen);
+        assertTrue(user.listaObjetos.isEmpty());
 
     }
 
     @Test
-    public void eliminarObjetosDeUsuarioTest(){
+    public void eliminarObjetosDeUsuarioTest() throws UsuarioNoExisteException, UsuarioSinObjetosException {
 
-        u = "pol";
-        nom_obj = "espada";
-        //result = miMundo.eliminarObjetosDeUsuario(u);
+        nombre = "pol";
+        nombreObjeto = "espada";
 
-        assertTrue(result);
-        //assertNull(miMundo.consultarObjetoDeUsuario(u,nom_obj));
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.eliminarObjetosDeUsuario("BadName");});
+        Assertions.assertThrows(UsuarioSinObjetosException.class, () -> {miMundo.eliminarObjetosDeUsuario("marc");});
+
+        assertTrue(miMundo.eliminarObjetosDeUsuario(nombre));
+
+        Assertions.assertThrows(UsuarioSinObjetosException.class, () -> {miMundo.eliminarObjetosDeUsuario(nombre);});
     }
 
     @Test
-    public void eliminarUsuarioTest(){
+    public void eliminarUsuarioTest() throws UsuarioNoExisteException{
 
-        u = "pol";
-       // result = miMundo.eliminarUsuario(u);
-        assertTrue(result);
-        //assertNull(miMundo.consultarUsuario(u));
+        nombre = "pol";
 
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.eliminarUsuario("BadName");});
+
+        assertTrue(miMundo.eliminarUsuario(nombre));
+
+        Assertions.assertThrows(UsuarioNoExisteException.class, () -> {miMundo.eliminarObjetosDeUsuario(nombre);});
     }
 
 

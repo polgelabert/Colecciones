@@ -16,7 +16,7 @@ public class Main {
         ArrayList<Objeto> listaObjetos = new ArrayList<>();
         ArrayList<Objeto> lobj2 = new ArrayList<>();
         List<Objeto> listaObjetosReturned;
-        String usu, origen, destino, nombreObjeto, nombre, password, tipoObjeto, descripcionObjeto;
+        String origen, destino, nombreObjeto, nombre, password, tipoObjeto, descripcionObjeto;
         int nivel, ataque, defensa, resistencia, valorObjeto, costeObjeto;
         boolean b;
 
