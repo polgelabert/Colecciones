@@ -10,10 +10,11 @@ public class Mundo{
 
 
 
-    public boolean crearUsuario(Usuario u){
+    public boolean crearUsuario(Usuario u) throws UsuarioYaExisteException{
 
+        if(isUser(u.nombre)) throw new UsuarioYaExisteException();          // lanza excepcion si isUser== true (lo contiene)
         map.put(u.nombre, u);
-        return true;
+        return true;                                                        // return true ya que operacion ok
     }
 
     public void añadirObjetoAUsuario (String nombre, Objeto objeto) throws UsuarioNoExisteException {
@@ -32,6 +33,13 @@ public class Mundo{
         if( usuario == null) throw new Exceptions.UsuarioNoExisteException();
         return usuario;
     }
+
+    public boolean existeUsuario (String nombre) {
+
+        if(isUser(nombre)) return true;
+        return false;
+    }
+
 
     /**
      * retorna un objeto asociado a un usuario. En caso que el usuario no exista, se retornará un null,
@@ -103,6 +111,8 @@ public class Mundo{
         if (map.get(nombre) == null) throw new Exceptions.UsuarioNoExisteException();
         return map.get(nombre);
     }
+
+    private boolean isUser (String nombre) { return (map.containsKey(nombre)); }
 
     private void removeUser(Usuario usuario) {
 

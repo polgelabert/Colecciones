@@ -17,7 +17,7 @@ public class Test2 {
     final static Logger log = Logger.getLogger(Test2.class.getName());          // test2.class.getname indica el nombre de la clase.
 
     Mundo miMundo;
-    HashMap<String, Usuario> Map;
+    HashMap<String, Usuario> map;
     Usuario player, userEsperado;
     Objeto o, objeto, objetoEsperado, objetoReturned;
     ArrayList<Objeto>  lobj, lobj_esperado;
@@ -29,7 +29,7 @@ public class Test2 {
 
     @Before @After
     public void setUp(){
-        Map = new HashMap<>();
+        map = new HashMap<>();
         miMundo = new Mundo();
         lobj = new ArrayList<Objeto>();
         lobj_esperado = new ArrayList<Objeto>();
@@ -52,6 +52,15 @@ public class Test2 {
     }
 
 
+    @Test
+    public void crearUsuarioTest() throws UsuarioYaExisteException{
+        Usuario user = new Usuario ("pol", "lolo_pass", 111, 222, 333, 444);
+        Assertions.assertThrows(UsuarioYaExisteException.class, () -> { miMundo.crearUsuario(user); });
+
+        Usuario user2 = new Usuario ("lolo", "lolo_pass", 111, 222, 333, 444);
+        assertTrue(miMundo.crearUsuario(user2));
+
+    }
 
     @Test
     public void añadirObjetoAUsuarioTest() throws UsuarioNoExisteException, UsuarioSinObjetosException, ObjetoNoEncontradoException{

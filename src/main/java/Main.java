@@ -28,16 +28,21 @@ public class Main {
 
 
         // Inicialmente, se añaden 2 usuarios con 1 objeto cada uno.
-        u = new Usuario("pol", "1234", 10, 20, 30, 40);
-        o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
-        u.listaObjetos.add(o);
-        miMundo.map.put(u.nombre, u);
-        miMundo.crearUsuario(u);
-        u = new Usuario("marc", "marc_pass", 50, 60, 70, 80);
-        o = new Objeto("puñal", "asesinato", "puñal para asesinar a los enemigos", 300, 150);
-        u.listaObjetos.add(o);
-        miMundo.map.put(u.nombre, u);
-        miMundo.crearUsuario(u);
+        try {
+            u = new Usuario("pol", "1234", 10, 20, 30, 40);
+            o = new Objeto("espada", "samurai", "espada para luchar contra los enemigos", 500, 350);
+            u.listaObjetos.add(o);
+            miMundo.crearUsuario(u);
+            u = new Usuario("marc", "marc_pass", 50, 60, 70, 80);
+            o = new Objeto("puñal", "asesinato", "puñal para asesinar a los enemigos", 300, 150);
+            u.listaObjetos.add(o);
+            miMundo.crearUsuario(u);
+
+        } catch (Exception e){
+            log.fatal(e.getMessage() + e.getCause());
+            e.printStackTrace();
+        }
+
 
 
 
